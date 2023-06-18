@@ -20,42 +20,62 @@ async function authenticate() {
     },
     data: 'grant_type=client_credentials',
   });
-
   return authResponse.data.access_token;
 }
 
 // Check if the song is in the playlist
-async function isSongInPlaylist(accessToken, playlistId, songUri) {
-  const playlistResponse = await axios({
-    method: 'GET',
-    url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+async function isSongInPlaylist(accessToken, playlistId, trackId) {
+  let offset = 0;
+  let totalItems = Infinity;
 
-  const playlistItems = playlistResponse.data.items;
-  const matchingSong = playlistItems.find((item) => item.track.uri === songUri);
+  while (offset < totalItems) {
+    console.log(offset)
+    const playlistResponse = await axios({
+      method: 'GET',
+      url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        offset: offset,
+        limit: 100,
+      },
+    });
 
-  return matchingSong !== undefined;
+    const playlistData = playlistResponse.data;
+    const playlistItems = playlistData.items;
+    totalItems = playlistData.total;
+    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
+
+    if (matchingSong) {
+      return true;
+    }
+
+    offset += playlistItems.length;
+  }
+
+  return false;
 }
+
+
 
 // HTTP route to check if a song is in a playlist
 app.get('/checkSong', async (req, res) => {
   const playlistId = req.query.playlistId;
-  const songUri = req.query.songUri;
+  const trackId = req.query.trackId;
 
   try {
     const accessToken = await authenticate();
-    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, songUri);
+    // console.log(accessToken);
+    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
-      res.send('The song is already in the specified playlist.');
+      res.status(200).send('The song is already in the specified playlist.');
     } else {
-      res.send('The song is not in the specified playlist.');
+      res.status(404).send('The song is not in the specified playlist.');
     }
   } catch (error) {
-    res.status(500).send('Error occurred:', error.response.data);
+    res.status(500).send('Error occurred:' + error.response.data);
   }
 });
 
