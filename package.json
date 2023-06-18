@@ -1,5 +1,5 @@
 {
-    "name": "spotify_songChecker",
+    "name": "spotify_songchecker",
     "version": "1.0.0",
     "description": "Node.js program to check if a song is in a Spotify playlist",
     "main": "index.js",
