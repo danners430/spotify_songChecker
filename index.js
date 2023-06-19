@@ -92,6 +92,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       foundMatch = true; // Set the flag variable to true if a match is found
+      console.log("Found");
     }
 
     offset -= batchSize;
