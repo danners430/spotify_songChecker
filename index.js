@@ -64,6 +64,8 @@ app.get('/checkSong', async (req, res) => {
   const playlistId = req.query.playlistId;
   const trackId = req.query.trackId;
 
+  console.log(playlistId + " " + trackId);
+
   try {
     const accessToken = await authenticate();
     // console.log(accessToken);
