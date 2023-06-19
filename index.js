@@ -75,7 +75,6 @@ app.get('/checkSong', async (req, res) => {
 
   try {
     const accessToken = await authenticate();
-    // console.log(accessToken);
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
@@ -84,9 +83,10 @@ app.get('/checkSong', async (req, res) => {
       res.status(404).send();
     }
   } catch (error) {
-    res.status(500).send('Error occurred:' + error.response.data);
+    res.status(500).send('Error occurred: ' + JSON.stringify(error.response.data));
   }
 });
+
 
 // Start the server
 app.listen(port, () => {
