@@ -84,7 +84,7 @@ app.get('/checkSong', async (req, res) => {
       res.status(404).send();
     }
   } catch (error) {
-    res.status(500).send();
+    res.status(500).send('Error occurred:' + error.response.data);
   }
 });
 
