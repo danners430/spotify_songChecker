@@ -67,7 +67,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   // Start the search from the maximum index
   while (totalItems > 0 && !foundMatch) { // Check the flag variable before continuing the loop
     const batchSize = Math.min(totalItems, 100);
-
+    console.log(totalItems-batchSize);
     const playlistResponse = await axios({
       method: 'GET',
       url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
