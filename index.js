@@ -70,12 +70,12 @@ app.get('/checkSong', async (req, res) => {
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
-      res.status(200);
+      res.status(200).send();
     } else {
-      res.status(404);
+      res.status(404).send();
     }
   } catch (error) {
-    res.status(500);
+    res.status(500).send();
   }
 });
 
