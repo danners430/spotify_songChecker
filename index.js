@@ -24,7 +24,7 @@ async function authenticate() {
 }
 
 // Get the album id
-
+/*
 async function getAlbumId(accessToken, trackId) {
   const response = await axios({
     method: 'GET',
@@ -39,20 +39,33 @@ async function getAlbumId(accessToken, trackId) {
 
   return albumId;
 }
-
+*/
 
 // Check if the song is in the playlist
 // const axios = require('axios');
 
-async function isSongInPlaylist(accessToken, playlistId, trackId, albumId) {
+async function isSongInPlaylist(accessToken, playlistId, trackId) {
   let offset = 0;
-  let totalItems = Infinity;
+  let totalItems = 0;
 
-  console.log(albumId);
+  // Fetch the total number of items in the playlist
+  const totalResponse = await axios({
+    method: 'GET',
+    url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      offset: 0,
+      limit: 1,
+    },
+  });
 
-  while (offset < totalItems) {
-    console.log(offset);
-    const batchSize = 100; // Increase this value to fetch more tracks in each request
+  totalItems = totalResponse.data.total;
+
+  // Start the search from the maximum index
+  while (totalItems > 0) {
+    const batchSize = Math.min(totalItems, 100);
 
     const playlistResponse = await axios({
       method: 'GET',
@@ -61,28 +74,28 @@ async function isSongInPlaylist(accessToken, playlistId, trackId, albumId) {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        offset: offset,
+        offset: totalItems - batchSize,
         limit: batchSize,
-        q: `album:${albumId}"`, // Filter by the album
       },
     });
 
     const playlistData = playlistResponse.data;
     const playlistItems = playlistData.items;
-    totalItems = playlistData.total;
 
-    console.log(playlistResponse.status);
+    for (let i = playlistItems.length - 1; i >= 0; i--) {
+      const currentTrackId = playlistItems[i].track.id;
 
-    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
-    if (matchingSong) {
-      return true;
+      if (currentTrackId === trackId) {
+        return true;
+      }
     }
 
-    offset += batchSize;
+    totalItems -= batchSize;
   }
 
   return false;
 }
+
 
 
 
@@ -96,7 +109,7 @@ app.get('/checkSong', async (req, res) => {
 
   try {
     const accessToken = await authenticate();
-    const albumId = await getAlbumId(accessToken,trackId);
+    // const albumId = await getAlbumId(accessToken,trackId);
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId, albumId);
 
     if (isSongPresent) {
