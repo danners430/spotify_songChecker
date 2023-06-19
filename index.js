@@ -109,7 +109,7 @@ app.get('/checkSong', async (req, res) => {
   try {
     const accessToken = await authenticate();
     // const albumId = await getAlbumId(accessToken,trackId);
-    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId, albumId);
+    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
       res.status(200).send();
