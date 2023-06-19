@@ -47,6 +47,7 @@ async function getAlbumId(accessToken, trackId) {
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
   let offset = 0;
   let totalItems = 0;
+  let foundMatch = false; // Flag variable to track match status
 
   // Fetch the total number of items in the playlist
   const totalResponse = await axios({
@@ -64,7 +65,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   totalItems = totalResponse.data.total;
 
   // Start the search from the maximum index
-  while (totalItems > 0) {
+  while (totalItems > 0 && !foundMatch) { // Check the flag variable before continuing the loop
     const batchSize = Math.min(totalItems, 100);
 
     const playlistResponse = await axios({
@@ -82,19 +83,17 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
     const playlistData = playlistResponse.data;
     const playlistItems = playlistData.items;
 
-    for (let i = playlistItems.length - 1; i >= 0; i--) {
-      const currentTrackId = playlistItems[i].track.id;
-
-      if (currentTrackId === trackId) {
-        return true;
-      }
+    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
+    if (matchingSong) {
+      foundMatch = true; // Set the flag variable to true if a match is found
     }
 
     totalItems -= batchSize;
   }
 
-  return false;
+  return foundMatch; // Return the flag variable
 }
+
 
 
 
