@@ -63,7 +63,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   });
 
   totalItems = totalResponse.data.total;
-
+  console.log(totalItems);
   // Start the search from the maximum index
   while (totalItems > 0 && !foundMatch) { // Check the flag variable before continuing the loop
     const batchSize = Math.min(totalItems, 100);
