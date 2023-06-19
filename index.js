@@ -32,7 +32,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
 
   while (offset < totalItems) {
     console.log(offset);
-    const batchSize = 1000; // Increase this value to fetch more tracks in each request
+    const batchSize = 10000; // Increase this value to fetch more tracks in each request
 
     const playlistResponse = await axios({
       method: 'GET',
