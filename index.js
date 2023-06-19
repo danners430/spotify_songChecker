@@ -50,6 +50,8 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
     const playlistItems = playlistData.items;
     totalItems = playlistData.total;
 
+    console.log(playlistResponse.status)
+
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       return true;
