@@ -24,12 +24,16 @@ async function authenticate() {
 }
 
 // Check if the song is in the playlist
+// const axios = require('axios');
+
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
   let offset = 0;
   let totalItems = Infinity;
 
   while (offset < totalItems) {
-    console.log(offset)
+    console.log(offset);
+    const batchSize = 1000; // Increase this value to fetch more tracks in each request
+
     const playlistResponse = await axios({
       method: 'GET',
       url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
@@ -38,24 +42,25 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
       },
       params: {
         offset: offset,
-        limit: 100,
+        limit: batchSize,
       },
     });
 
     const playlistData = playlistResponse.data;
     const playlistItems = playlistData.items;
     totalItems = playlistData.total;
-    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
 
+    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       return true;
     }
 
-    offset += playlistItems.length;
+    offset += batchSize;
   }
 
   return false;
 }
+
 
 
 
