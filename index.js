@@ -33,7 +33,7 @@ async function getAlbumId(accessToken, trackId) {
       Authorization: `Bearer ${accessToken}`,
     },
   });
-
+  
   const trackData = response.data;
   const albumId = trackData.album.id;
 
@@ -47,6 +47,8 @@ async function getAlbumId(accessToken, trackId) {
 async function isSongInPlaylist(accessToken, playlistId, trackId, albumId) {
   let offset = 0;
   let totalItems = Infinity;
+
+  console.log(albumId);
 
   while (offset < totalItems) {
     console.log(offset);
@@ -69,7 +71,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId, albumId) {
     const playlistItems = playlistData.items;
     totalItems = playlistData.total;
 
-    console.log(playlistResponse.status)
+    console.log(playlistResponse.status);
 
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
@@ -94,7 +96,7 @@ app.get('/checkSong', async (req, res) => {
 
   try {
     const accessToken = await authenticate();
-    const albumId = await getAlbumId(accessToken,trackId)
+    const albumId = await getAlbumId(accessToken,trackId);
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId, albumId);
 
     if (isSongPresent) {
