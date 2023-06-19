@@ -70,12 +70,12 @@ app.get('/checkSong', async (req, res) => {
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
-      res.status(200).send('The song is already in the specified playlist.');
+      res.status(200);
     } else {
-      res.status(404).send('The song is not in the specified playlist.');
+      res.status(404);
     }
   } catch (error) {
-    res.status(500).send('Error occurred:' + error.response.data);
+    res.status(500);
   }
 });
 
