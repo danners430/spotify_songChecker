@@ -65,12 +65,12 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   totalItems = totalResponse.data.total;
   console.log(totalItems);
 
+  const batchSize = 100;
+  offset = totalItems - batchSize
+
   // Start the search from the maximum index
 
-  while (totalItems > 0 && !foundMatch) { // Check the flag variable before continuing the loop
-    
-    const batchSize = 100;
-    offset = totalItems - batchSize
+  while (offset > 0 && !foundMatch) { // Check the flag variable before continuing the loop
 
     console.log(offset);
 
@@ -94,7 +94,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
       foundMatch = true; // Set the flag variable to true if a match is found
     }
 
-    totalItems -= batchSize;
+    offset -= batchSize;
   }
 
   return foundMatch; // Return the flag variable
