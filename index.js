@@ -23,16 +23,34 @@ async function authenticate() {
   return authResponse.data.access_token;
 }
 
+// Get the album id
+
+async function getAlbumId(accessToken, trackId) {
+  const response = await axios({
+    method: 'GET',
+    url: `https://api.spotify.com/v1/tracks/${trackId}`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const trackData = response.data;
+  const albumId = trackData.album.id;
+
+  return albumId;
+}
+
+
 // Check if the song is in the playlist
 // const axios = require('axios');
 
-async function isSongInPlaylist(accessToken, playlistId, trackId) {
+async function isSongInPlaylist(accessToken, playlistId, trackId, albumId) {
   let offset = 0;
   let totalItems = Infinity;
 
   while (offset < totalItems) {
     console.log(offset);
-    const batchSize = 10000; // Increase this value to fetch more tracks in each request
+    const batchSize = 100; // Increase this value to fetch more tracks in each request
 
     const playlistResponse = await axios({
       method: 'GET',
@@ -43,6 +61,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
       params: {
         offset: offset,
         limit: batchSize,
+        q: `album:${albumId}"`, // Filter by the album
       },
     });
 
@@ -75,7 +94,8 @@ app.get('/checkSong', async (req, res) => {
 
   try {
     const accessToken = await authenticate();
-    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
+    const albumId = await getAlbumId(accessToken,trackId)
+    const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId, albumId);
 
     if (isSongPresent) {
       res.status(200).send();
