@@ -44,7 +44,7 @@ async function getAlbumId(accessToken, trackId) {
 // Check if the song is in the playlist
 // const axios = require('axios');
 
-const axios = require('axios');
+// const axios = require('axios');
 
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
   let totalItems = 0;
