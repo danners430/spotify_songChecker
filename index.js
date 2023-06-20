@@ -44,8 +44,9 @@ async function getAlbumId(accessToken, trackId) {
 // Check if the song is in the playlist
 // const axios = require('axios');
 
+const axios = require('axios');
+
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
-  let offset = 0;
   let totalItems = 0;
   let foundMatch = false; // Flag variable to track match status
 
@@ -66,40 +67,40 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   console.log(totalItems);
 
   const batchSize = 100;
-  offset = totalItems - batchSize
+  const batchCount = Math.ceil(totalItems / batchSize);
 
-  // Start the search from the maximum index
-
-  while (offset > 0 && !foundMatch) { // Check the flag variable before continuing the loop
-
-    console.log(offset);
-
-    const playlistResponse = await axios({
+  // Create an array of promises for each batch
+  const batchPromises = Array.from({ length: batchCount }, (_, index) =>
+    axios({
       method: 'GET',
       url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        offset: offset,
+        offset: (batchCount - index - 1) * batchSize,
         limit: batchSize,
       },
-    });
+    })
+  );
 
-    const playlistData = playlistResponse.data;
-    const playlistItems = playlistData.items;
+  // Execute the promises concurrently using Promise.all
+  const batchResponses = await Promise.all(batchPromises);
 
+  // Iterate through the responses and check for a matching song
+  for (const response of batchResponses) {
+    const playlistItems = response.data.items;
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       foundMatch = true; // Set the flag variable to true if a match is found
       console.log("Found");
+      break; // Exit the loop if a match is found
     }
-
-    offset -= batchSize;
   }
 
   return foundMatch; // Return the flag variable
 }
+
 
 
 
