@@ -115,11 +115,14 @@ app.get('/checkSong', async (req, res) => {
 
     if (isSongPresent) {
       res.status(200).send();
+      console.log("Found");
     } else {
       res.status(404).send();
+      console.log("Not found");
     }
   } catch (error) {
     res.status(500).send('Error occurred: ' + JSON.stringify(error.response.data));
+    console.log(JSON.stringify(error.response.data));
   }
 });
 
