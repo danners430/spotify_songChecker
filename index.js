@@ -117,7 +117,7 @@ app.get('/checkSong', async (req, res) => {
       res.status(200).send();
       console.log("Found");
     } else {
-      res.status(404).send();
+      res.status(202).send();
       console.log("Not found");
     }
   } catch (error) {
