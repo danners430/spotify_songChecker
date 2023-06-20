@@ -42,9 +42,6 @@ async function getAlbumId(accessToken, trackId) {
 */
 
 // Check if the song is in the playlist
-// const axios = require('axios');
-
-// const axios = require('axios');
 
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
   let totalItems = 0;
@@ -87,25 +84,22 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   // Execute the promises concurrently using Promise.all
   const batchResponses = await Promise.all(batchPromises);
 
-  // Iterate through the responses and check for a matching song
-  for (const response of batchResponses) {
+  // Iterate through the responses and check for a matching song in parallel
+  const matchPromises = batchResponses.map(async (response, index) => {
     const playlistItems = response.data.items;
+    console.log(`Processing batch ${index + 1}/${batchCount}`);
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
-      foundMatch = true; // Set the flag variable to true if a match is found
-      console.log("Found");
-      break; // Exit the loop if a match is found
+      console.log('Found');
+      foundMatch = true;
     }
-  }
+  });
+
+  // Wait for all match-checking promises to complete
+  await Promise.all(matchPromises);
 
   return foundMatch; // Return the flag variable
 }
-
-
-
-
-
-
 
 // HTTP route to check if a song is in a playlist
 app.get('/checkSong', async (req, res) => {
