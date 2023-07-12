@@ -77,7 +77,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
   // Check if cache for the playlist exists and is valid
 
   if(cache[playlistId]) {
-    console.log("cache exists. Timestamp now: " + Date.now() + ". Cache timestamp: " + cache[playlistId].timestamp);
+    console.log("cache exists. Timestamp now: " + Date.now() + ". Cache timestamp: " + cache[playlistId].timestamp + ". Cache timeout: " + cacheTimeout);
     let cacheAge = Date.now() - cache[playlistId].timestamp;
     if (cacheAge < cacheTimeout) {
       console.log("Cache is valid");
