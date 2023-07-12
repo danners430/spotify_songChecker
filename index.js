@@ -86,7 +86,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
         return cache[playlistId].data;
   } else {
     console.log("Not found in cache; pinging Spotify");
-  }
+  };
 
   // Fetch the total number of items in the playlist
   const totalResponse = await axios({
@@ -102,7 +102,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
   });
 
   const totalItems = totalResponse.data.total;
-  console.log(totalItems);
+  console.log("Total items: " + totalItems);
 
   const batchSize = 100;
   const batchCount = Math.ceil(totalItems / batchSize);
@@ -124,6 +124,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
 
   // Execute the promises concurrently using Promise.all
   const batchResponses = await Promise.all(batchPromises);
+  console.log("All promises complete");
 
   // Concatenate the batch responses into a single array of tracks
   const tracks = batchResponses.reduce((acc, response) => {
