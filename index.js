@@ -129,7 +129,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
   // Update the cache for the playlist with the new data and timestamp
   cache[playlistId] = {
     data: tracks,
-    timestamp: Date.now(),
+    timestamp: Date.now(), // Store the current time in milliseconds
   };
 
   return tracks;
