@@ -59,14 +59,16 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   // Fetch the playlist data
   const playlistData = await fetchPlaylistData(accessToken, playlistId);
   console.log("Playlist data acquired");
-  
+
   // Check if the track exists in the playlist
   for (const playlistItems of playlistData) {
-    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
+    const matchingSong = await playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       console.log('Found');
       foundMatch = true;
       break;
+    } else {
+      console.log('Not found');
     }
   }
 
