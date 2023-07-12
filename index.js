@@ -62,9 +62,9 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
   const foundMatch = !!matchingSong;
 
   if (foundMatch) {
-    console.log('Found');
+    // console.log('Found');
   } else {
-    console.log('Not found');
+    // console.log('Not found');
   }
 
   return foundMatch; // Return the flag variable
@@ -73,16 +73,15 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
 // Function to fetch the playlist data from Spotify or cache
 async function fetchPlaylistData(accessToken, playlistId) {
   const cacheTimeout = process.env.CACHETIMEOUT; // Timeout in seconds (adjust as needed)
-  console.log("Cache timeout: "+cacheTimeout)
 
   // Check if cache for the playlist exists and is valid
   if (cache[playlistId] && cache[playlistId].timestamp && cache[playlistId].data &&
-      Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
-        console.log("Found playlist in cache");
-        return cache[playlistId].data;
-  } else {
-    console.log("Not found in cache; pinging Spotify");
-  };
+    Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
+    console.log("Found playlist in cache");
+    return cache[playlistId].data;
+  }
+
+  console.log("Not found in cache; pinging Spotify");
 
   // Fetch the total number of items in the playlist
   const totalResponse = await axios({
@@ -135,6 +134,7 @@ async function fetchPlaylistData(accessToken, playlistId) {
 
   return tracks;
 }
+
 
 // Authenticate and get an access token
 async function authenticate() {
