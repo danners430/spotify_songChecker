@@ -28,7 +28,7 @@ app.get('/checkSong', async (req, res) => {
 
   console.log(playlistId + " " + trackId);
 
-  try {
+  //try {
     const accessToken = await authenticate();
     console.log("Access token acquired");
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
@@ -40,10 +40,10 @@ app.get('/checkSong', async (req, res) => {
       res.status(202).send();
       console.log("Not found");
     }
-  } catch (error) {
+  /*} catch (error) {
     res.status(500).send('Error occurred: ' + JSON.stringify(error.response.data));
     console.log(JSON.stringify(error.response.data));
-  }
+  }*/
 });
 
 
