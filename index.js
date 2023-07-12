@@ -9,62 +9,17 @@ const port = process.env.PORT || 3000;
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
-// Authenticate and get an access token
-async function authenticate() {
-  const authResponse = await axios({
-    method: 'POST',
-    url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
-    },
-    data: 'grant_type=client_credentials',
-  });
-  console.log(authResponse.data.access_token)
-  return authResponse.data.access_token;
-  
-}
+// Create an object to store the cached playlist data
+const cache = {};
 
-// Get the album id
-/*
-async function getAlbumId(accessToken, trackId) {
-  const response = await axios({
-    method: 'GET',
-    url: `https://api.spotify.com/v1/tracks/${trackId}`,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  
-  const trackData = response.data;
-  const albumId = trackData.album.id;
 
-  return albumId;
-}
-*/
+// App
 
-// Check if the song is in the playlist
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 
-async function isSongInPlaylist(accessToken, playlistId, trackId) {
-
-  let foundMatch = false; // Flag variable to track match status
-
-  // Fetch the playlist data
-  const playlistData = await fetchPlaylistData(accessToken, playlistId);
-
-  // Check if the track exists in the playlist
-  // let foundMatch = false;
-  for (const playlistItems of playlistData) {
-    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
-    if (matchingSong) {
-      console.log('Found');
-      foundMatch = true;
-      break;
-    }
-  }
-
-  return foundMatch; // Return the flag variable
-}
 
 // HTTP route to check if a song is in a playlist
 app.get('/checkSong', async (req, res) => {
@@ -75,7 +30,7 @@ app.get('/checkSong', async (req, res) => {
 
   try {
     const accessToken = await authenticate();
-    // const albumId = await getAlbumId(accessToken,trackId);
+    console.log("Access token acquired");
     const isSongPresent = await isSongInPlaylist(accessToken, playlistId, trackId);
 
     if (isSongPresent) {
@@ -91,8 +46,32 @@ app.get('/checkSong', async (req, res) => {
   }
 });
 
-// Create an object to store the cached playlist data
-const cache = {};
+
+// Functions
+
+
+// Check if the song is in the playlist
+
+async function isSongInPlaylist(accessToken, playlistId, trackId) {
+
+  let foundMatch = false; // Flag variable to track match status
+
+  // Fetch the playlist data
+  const playlistData = await fetchPlaylistData(accessToken, playlistId);
+  console.log("Playlist data acquired");
+  
+  // Check if the track exists in the playlist
+  for (const playlistItems of playlistData) {
+    const matchingSong = playlistItems.find((item) => item.track.id === trackId);
+    if (matchingSong) {
+      console.log('Found');
+      foundMatch = true;
+      break;
+    }
+  }
+
+  return foundMatch; // Return the flag variable
+}
 
 // Function to fetch the playlist data from Spotify or cache
 async function fetchPlaylistData(accessToken, playlistId) {
@@ -156,8 +135,19 @@ async function fetchPlaylistData(accessToken, playlistId) {
   return tracks;
 }
 
+// Authenticate and get an access token
+async function authenticate() {
+  const authResponse = await axios({
+    method: 'POST',
+    url: 'https://accounts.spotify.com/api/token',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+    },
+    data: 'grant_type=client_credentials',
+  });
+  // console.log(authResponse.data.access_token)
+  return authResponse.data.access_token;
+  
+}
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
