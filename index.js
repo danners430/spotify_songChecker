@@ -44,59 +44,22 @@ async function getAlbumId(accessToken, trackId) {
 // Check if the song is in the playlist
 
 async function isSongInPlaylist(accessToken, playlistId, trackId) {
-  let totalItems = 0;
+
   let foundMatch = false; // Flag variable to track match status
 
-  // Fetch the total number of items in the playlist
-  const totalResponse = await axios({
-    method: 'GET',
-    url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    params: {
-      offset: 0,
-      limit: 1,
-    },
-  });
+  // Fetch the playlist data
+  const playlistData = await fetchPlaylistData(accessToken, playlistId);
 
-  totalItems = totalResponse.data.total;
-  console.log(totalItems);
-
-  const batchSize = 100;
-  const batchCount = Math.ceil(totalItems / batchSize);
-
-  // Create an array of promises for each batch
-  const batchPromises = Array.from({ length: batchCount }, (_, index) =>
-    axios({
-      method: 'GET',
-      url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        offset: (batchCount - index - 1) * batchSize,
-        limit: batchSize,
-      },
-    })
-  );
-
-  // Execute the promises concurrently using Promise.all
-  const batchResponses = await Promise.all(batchPromises);
-
-  // Iterate through the responses and check for a matching song in parallel
-  const matchPromises = batchResponses.map(async (response, index) => {
-    const playlistItems = response.data.items;
-    console.log(`Processing batch ${index + 1}/${batchCount}`);
+  // Check if the track exists in the playlist
+  // let foundMatch = false;
+  for (const playlistItems of playlistData) {
     const matchingSong = playlistItems.find((item) => item.track.id === trackId);
     if (matchingSong) {
       console.log('Found');
       foundMatch = true;
+      break;
     }
-  });
-
-  // Wait for all match-checking promises to complete
-  await Promise.all(matchPromises);
+  }
 
   return foundMatch; // Return the flag variable
 }
@@ -125,6 +88,71 @@ app.get('/checkSong', async (req, res) => {
     console.log(JSON.stringify(error.response.data));
   }
 });
+
+// Create an object to store the cached playlist data
+const cache = {};
+
+// Function to fetch the playlist data from Spotify or cache
+async function fetchPlaylistData(accessToken, playlistId) {
+  const cacheTimeout = process.env.CACHETIMEOUT; // Timeout in seconds (adjust as needed)
+
+  // Check if cache for the playlist exists and is valid
+  if (cache[playlistId] && cache[playlistId].timestamp && cache[playlistId].data &&
+      Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
+        console.log("Found playlist in cache");
+        return cache[playlistId].data;
+  }
+
+  // Fetch the total number of items in the playlist
+  const totalResponse = await axios({
+    method: 'GET',
+    url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: {
+      offset: 0,
+      limit: 1,
+    },
+  });
+
+  const totalItems = totalResponse.data.total;
+  console.log(totalItems);
+
+  const batchSize = 100;
+  const batchCount = Math.ceil(totalItems / batchSize);
+
+  // Create an array of promises for each batch
+  const batchPromises = Array.from({ length: batchCount }, (_, index) =>
+    axios({
+      method: 'GET',
+      url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        offset: (batchCount - index - 1) * batchSize,
+        limit: batchSize,
+      },
+    })
+  );
+
+  // Execute the promises concurrently using Promise.all
+  const batchResponses = await Promise.all(batchPromises);
+
+  // Concatenate the batch responses into a single array of tracks
+  const tracks = batchResponses.reduce((acc, response) => {
+    return acc.concat(response.data.items);
+  }, []);
+
+  // Update the cache for the playlist with the new data and timestamp
+  cache[playlistId] = {
+    data: tracks,
+    timestamp: Date.now(),
+  };
+
+  return tracks;
+}
 
 
 // Start the server
