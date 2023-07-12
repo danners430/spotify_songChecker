@@ -73,6 +73,7 @@ async function isSongInPlaylist(accessToken, playlistId, trackId) {
 // Function to fetch the playlist data from Spotify or cache
 async function fetchPlaylistData(accessToken, playlistId) {
   const cacheTimeout = process.env.CACHETIMEOUT; // Timeout in seconds (adjust as needed)
+  console.log("Cache timeout: "+cacheTimeout)
 
   // Check if cache for the playlist exists and is valid
   if (cache[playlistId] && cache[playlistId].timestamp && cache[playlistId].data &&
