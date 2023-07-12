@@ -20,7 +20,9 @@ async function authenticate() {
     },
     data: 'grant_type=client_credentials',
   });
+  console.log(authResponse.data.access_token)
   return authResponse.data.access_token;
+  
 }
 
 // Get the album id
