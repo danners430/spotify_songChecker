@@ -84,6 +84,8 @@ async function fetchPlaylistData(accessToken, playlistId) {
       Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
         console.log("Found playlist in cache");
         return cache[playlistId].data;
+  } else {
+    console.log("Not found in cache; pinging Spotify");
   }
 
   // Fetch the total number of items in the playlist
