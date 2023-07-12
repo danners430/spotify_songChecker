@@ -75,10 +75,14 @@ async function fetchPlaylistData(accessToken, playlistId) {
   const cacheTimeout = process.env.CACHETIMEOUT; // Timeout in seconds (adjust as needed)
 
   // Check if cache for the playlist exists and is valid
-  if (cache[playlistId] && cache[playlistId].timestamp && cache[playlistId].data &&
-    Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
-    console.log("Found playlist in cache");
-    return cache[playlistId].data;
+
+  if(cache[playlistId]) {
+    console.log("cache exists. Timestamp now: " + Date.now() = ". Cache timestamp: " + cache[playlistId].timestamp);
+    if (Date.now() - cache[playlistId].timestamp < cacheTimeout * 1000) {
+      console.log("Cache is valid");
+      return cache[playlistId].data;
+    }
+
   }
 
   console.log("Not found in cache; pinging Spotify");
