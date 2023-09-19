@@ -10,6 +10,7 @@ let playlists = {};
 try {
   const data = fs.readFileSync(genresFilePath, "utf-8");
   playlists = JSON.parse(data);
+  console.log(playlists);
 } catch (error) {
   console.error("Error loading genres JSON file:", error);
 }
