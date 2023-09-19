@@ -316,6 +316,6 @@ function determineMatchingPlaylists(trackGenres) {
       }
     }
   }
-
+  console.log(matchingPlaylists);
   return matchingPlaylists;
 }
