@@ -298,9 +298,10 @@ async function fetchTrackDetails(trackId) {
   
 // Determine which playlist(s) the track belongs to based on keyword search
 function determineMatchingPlaylists(trackGenres) {
-  const results = [];
+  const results = {};
 
-  for (const playlist of playlists) {
+  for (const playlistKey in playlists) {
+    const playlist = playlists[playlistKey];
     const playlistMatches = [];
 
     for (const keyword of playlist) {
@@ -309,7 +310,7 @@ function determineMatchingPlaylists(trackGenres) {
       }
     }
 
-    results.push(playlistMatches);
+    results[playlistKey] = playlistMatches;
   }
 
   return results;
