@@ -28,8 +28,8 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 const spotifyApiEndpoint = "https://api.spotify.com/v1"
 
 // Retrieve playlist URIs from environment variables
-const dancePlaylistUri = process.env.SPOTIFY_PLAYLIST_URI_1;
-const folkPlaylistUri = process.env.SPOTIFY_PLAYLIST_URI_2;
+const dancePlaylistUri = process.env.SPOTIFY_DANCE_PLAYLIST_URI;
+const folkPlaylistUri = process.env.SPOTIFY_FOLK_PLAYLIST_URI;
 
 // Create an object to store the cached playlist data
 const cache = {};
@@ -86,10 +86,6 @@ app.get("/sort-and-check-track", async (req, res) => {
       const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres);
   
       const playlistChecks = [];
-  
-      // Define your playlist URIs for "dance" and "folk"
-      const dancePlaylistUri = process.env.SPOTIFY_DANCE_PLAYLIST_URI;
-      const folkPlaylistUri = process.env.SPOTIFY_FOLK_PLAYLIST_URI;
   
       // Check if the song is in the specified playlists for which there is a genre match
       if (matchingPlaylists.includes("dance")) {
