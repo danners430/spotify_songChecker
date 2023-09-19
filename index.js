@@ -101,8 +101,8 @@ app.get("/sort-and-check-track", async (req, res) => {
   
       if (matchingPlaylists.includes("folk")) {
         const accessToken = await authenticate();
-        const isInDance = await isSongInPlaylist(accessToken, folkPlaylistUri, trackId)
-        if (!isInDance) {isSongPresentInFolkPlaylist};
+        const isInFolk = await isSongInPlaylist(accessToken, folkPlaylistUri, trackId)
+        if (!isInFolk) {isSongPresentInFolkPlaylist = true};
       }
 
   
