@@ -297,24 +297,27 @@ async function fetchTrackDetails(trackId) {
 
   
   
-  // Determine which playlist(s) the track belongs to
-  function determineMatchingPlaylists(trackGenres) {
-    const matchingPlaylists = [];
-  
-    for (const playlist in playlists) {
-      const playlistGenres = playlists[playlist];
-      const hasMatchingGenre = trackGenres.some((genre) =>
-        playlistGenres.includes(genre)
-      );
-  
-      if (hasMatchingGenre) {
-        matchingPlaylists.push(playlist);
-        // Break the loop when the first match is found
-        break;
-      }
+  // Determine which playlist(s) the track belongs to based on keyword search
+function determineMatchingPlaylists(trackGenres, keywords) {
+  const matchingPlaylists = [];
+
+  for (const playlist in playlists) {
+    const playlistGenres = playlists[playlist];
+    const hasMatchingGenre = trackGenres.some((trackGenre) =>
+      playlistGenres.some((playlistGenre) =>
+        playlistGenre.toLowerCase().includes(keywords)
+      )
+    );
+
+    if (hasMatchingGenre) {
+      matchingPlaylists.push(playlist);
+      // Break the loop when the first match is found
+      break;
     }
-  
-    return matchingPlaylists;
   }
+
+  return matchingPlaylists;
+}
+
   
   
