@@ -70,7 +70,7 @@ app.get("/checkSong", async (req, res) => {
 // Define a route to sort and check a track
 app.get("/sort-and-check-track", async (req, res) => {
     try {
-      const trackId = req.body.trackId;
+      const trackId = req.query.trackId;
       if (!trackId) {
         return res.status(400).json({ error: "Missing trackId in request body" });
       }
