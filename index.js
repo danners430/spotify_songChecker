@@ -83,7 +83,7 @@ app.get("/sort-and-check-track", async (req, res) => {
       }
   
       // Determine which playlist(s) the track belongs to
-      const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres);
+      const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres,playlists);
   
       console.log(matchingPlaylists);
 
@@ -295,15 +295,18 @@ async function fetchTrackDetails(trackId) {
 
   
   
-  // Determine which playlist(s) the track belongs to based on keyword search
-function determineMatchingPlaylists(trackGenres, keywords) {
+// Determine which playlist(s) the track belongs to based on keyword search
+function determineMatchingPlaylists(trackGenres, genresData) {
   const matchingPlaylists = [];
 
   for (const playlist in playlists) {
     const playlistGenres = playlists[playlist];
     const hasMatchingGenre = trackGenres.some((trackGenre) =>
       playlistGenres.some((playlistGenre) =>
-        playlistGenre.toLowerCase().includes(keywords)
+        genresData[trackGenre.toLowerCase()] &&
+        genresData[trackGenre.toLowerCase()].some(keyword =>
+          playlistGenre.toLowerCase().includes(keyword.toLowerCase())
+        )
       )
     );
 
@@ -316,6 +319,3 @@ function determineMatchingPlaylists(trackGenres, keywords) {
 
   return matchingPlaylists;
 }
-
-  
-  
