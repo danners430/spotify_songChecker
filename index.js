@@ -312,6 +312,7 @@ function determineMatchingPlaylists(trackGenres) {
       console.log(keywordLower);
 
       if (trackGenresLower.includes(keywordLower)) {
+        console.log("Match found! " + keywordLower)
         matchingPlaylists.push(playlistKey);
         break; // Break after the first match is found in this playlist
       }
