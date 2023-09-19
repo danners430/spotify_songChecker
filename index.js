@@ -299,8 +299,6 @@ async function fetchTrackDetails(trackId) {
 // Determine which playlist(s) the track belongs to based on keyword search
 function determineMatchingPlaylists(trackGenres) {
   const matchingPlaylists = [];
-  
-  console.log(trackGenres)
 
   // Convert trackGenres to lowercase for case-insensitive comparison
   const trackGenresLower = trackGenres.map(keyword => keyword.toLowerCase());
@@ -311,15 +309,14 @@ function determineMatchingPlaylists(trackGenres) {
     for (const keyword of playlist) {
       // Convert keyword to lowercase for case-insensitive comparison
       const keywordLower = keyword.toLowerCase();
-      console.log(keywordLower);
 
-      if (trackGenresLower.includes(keywordLower)) {
-        console.log("Match found! " + keywordLower)
+      // Check if any part of the keyword is included in trackGenres
+      if (trackGenresLower.some(genre => genre.includes(keywordLower))) {
         matchingPlaylists.push(playlistKey);
         break; // Break after the first match is found in this playlist
       }
     }
   }
-  console.log(matchingPlaylists);
+
   return matchingPlaylists;
 }
