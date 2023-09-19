@@ -68,7 +68,7 @@ app.get("/checkSong", async (req, res) => {
 });
 
 // Define a route to sort and check a track
-app.post("/sort-and-check-track", async (req, res) => {
+app.get("/sort-and-check-track", async (req, res) => {
     try {
       const trackId = req.body.trackId;
       if (!trackId) {
