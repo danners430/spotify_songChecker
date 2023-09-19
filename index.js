@@ -85,6 +85,8 @@ app.get("/sort-and-check-track", async (req, res) => {
       // Determine which playlist(s) the track belongs to
       const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres);
   
+      console.log(matchingPlaylists);
+
       const playlistChecks = [];
   
       // Check if the song is in the specified playlists for which there is a genre match
@@ -276,7 +278,7 @@ async function fetchTrackDetails(trackId) {
       // Combine album and artist genres
       const combinedGenres = [...albumGenres, ...artistGenres];
 
-      console.log(combinedGenres)
+      console.log(combinedGenres);
 
       return {
         name: response.data.name,
