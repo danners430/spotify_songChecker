@@ -298,20 +298,18 @@ async function fetchTrackDetails(trackId) {
   
 // Determine which playlist(s) the track belongs to based on keyword search
 function determineMatchingPlaylists(trackGenres) {
-  const results = {};
+  const matchingPlaylists = [];
 
   for (const playlistKey in playlists) {
     const playlist = playlists[playlistKey];
-    const playlistMatches = [];
 
     for (const keyword of playlist) {
       if (trackGenres.includes(keyword)) {
-        playlistMatches.push(keyword);
+        matchingPlaylists.push(playlistKey);
+        break; // Break after the first match is found in this playlist
       }
     }
-
-    results[playlistKey] = playlistMatches;
   }
 
-  return results;
+  return matchingPlaylists;
 }
