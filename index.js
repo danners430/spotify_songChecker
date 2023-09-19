@@ -296,26 +296,20 @@ async function fetchTrackDetails(trackId) {
   
   
 // Determine which playlist(s) the track belongs to based on keyword search
-function determineMatchingPlaylists(trackGenres, genresData) {
-  const matchingPlaylists = [];
+function determineMatchingPlaylists(trackGenres) {
+  const results = [];
 
-  for (const playlist in playlists) {
-    const playlistGenres = playlists[playlist];
-    const hasMatchingGenre = trackGenres.some((trackGenre) =>
-      playlistGenres.some((playlistGenre) =>
-        genresData[trackGenre.toLowerCase()] &&
-        genresData[trackGenre.toLowerCase()].some(keyword =>
-          playlistGenre.toLowerCase().includes(keyword.toLowerCase())
-        )
-      )
-    );
+  for (const playlist of playlists) {
+    const playlistMatches = [];
 
-    if (hasMatchingGenre) {
-      matchingPlaylists.push(playlist);
-      // Break the loop when the first match is found
-      break;
+    for (const keyword of playlist) {
+      if (trackGenres.includes(keyword)) {
+        playlistMatches.push(keyword);
+      }
     }
+
+    results.push(playlistMatches);
   }
 
-  return matchingPlaylists;
+  return results;
 }
