@@ -35,6 +35,8 @@ const folkPlaylistUri = process.env.SPOTIFY_FOLK_PLAYLIST_URI;
 // Create an object to store the cached playlist data
 const cache = {};
 
+let isSongPresentInDancePlaylist = false
+let isSongPresentInFolkPlaylist = false
 
 // App
 
@@ -94,7 +96,7 @@ app.get("/sort-and-check-track", async (req, res) => {
       if (matchingPlaylists.includes("dance")) {
         const accessToken = await authenticate();
         const isInDance = await isSongInPlaylist(accessToken, dancePlaylistUri, trackId)
-        if (!isInDance) {isSongPresentInDancePlaylist};
+        if (!isInDance) {isSongPresentInDancePlaylist = true};
       }
   
       if (matchingPlaylists.includes("folk")) {
