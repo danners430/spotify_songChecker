@@ -92,17 +92,17 @@ app.get("/sort-and-check-track", async (req, res) => {
   
       // Check if the song is in the specified playlists for which there is a genre match
       if (matchingPlaylists.includes("dance")) {
-        playlistChecks.push(isSongInPlaylist(trackId, dancePlaylistUri));
+        const accessToken = await authenticate();
+        const isInDance = await isSongInPlaylist(accessToken, dancePlaylistUri, trackId)
+        if (!isInDance) {isSongPresentInDancePlaylist};
       }
   
       if (matchingPlaylists.includes("folk")) {
-        playlistChecks.push(isSongInPlaylist(trackId, folkPlaylistUri));
+        const accessToken = await authenticate();
+        const isInDance = await isSongInPlaylist(accessToken, folkPlaylistUri, trackId)
+        if (!isInDance) {isSongPresentInFolkPlaylist};
       }
-  
-      // Wait for all playlist checks to complete
-      const [isSongPresentInDancePlaylist, isSongPresentInFolkPlaylist] = await Promise.all(
-        playlistChecks
-      );
+
   
     // Determine the status code based on the criteria
     let statusCode;
