@@ -83,7 +83,7 @@ app.get("/sort-and-check-track", async (req, res) => {
       }
   
       // Determine which playlist(s) the track belongs to
-      const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres,playlists);
+      const matchingPlaylists = determineMatchingPlaylists(trackDetails.genres);
   
       console.log(matchingPlaylists);
 
