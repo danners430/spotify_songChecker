@@ -279,7 +279,7 @@ async function fetchTrackDetails(trackId) {
       // Combine album and artist genres
       const combinedGenres = [...albumGenres, ...artistGenres];
 
-      console.log(combinedGenres);
+      // console.log(combinedGenres);
 
       return {
         name: response.data.name,
@@ -299,6 +299,8 @@ async function fetchTrackDetails(trackId) {
 // Determine which playlist(s) the track belongs to based on keyword search
 function determineMatchingPlaylists(trackGenres) {
   const matchingPlaylists = [];
+  
+  console.log(trackGenres)
 
   // Convert trackGenres to lowercase for case-insensitive comparison
   const trackGenresLower = trackGenres.map(keyword => keyword.toLowerCase());
