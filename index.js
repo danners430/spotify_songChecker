@@ -280,6 +280,8 @@ async function fetchTrackDetails(trackId) {
       // Combine album and artist genres
       const combinedGenres = [...albumGenres, ...artistGenres];
 
+      console.log(combinedGenres)
+
       return {
         name: response.data.name,
         genres: combinedGenres,
