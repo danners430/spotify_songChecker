@@ -309,6 +309,7 @@ function determineMatchingPlaylists(trackGenres) {
     for (const keyword of playlist) {
       // Convert keyword to lowercase for case-insensitive comparison
       const keywordLower = keyword.toLowerCase();
+      console.log(keywordLower);
 
       if (trackGenresLower.includes(keywordLower)) {
         matchingPlaylists.push(playlistKey);
