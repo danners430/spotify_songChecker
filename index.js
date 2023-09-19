@@ -300,11 +300,17 @@ async function fetchTrackDetails(trackId) {
 function determineMatchingPlaylists(trackGenres) {
   const matchingPlaylists = [];
 
+  // Convert trackGenres to lowercase for case-insensitive comparison
+  const trackGenresLower = trackGenres.map(keyword => keyword.toLowerCase());
+
   for (const playlistKey in playlists) {
     const playlist = playlists[playlistKey];
 
     for (const keyword of playlist) {
-      if (trackGenres.includes(keyword)) {
+      // Convert keyword to lowercase for case-insensitive comparison
+      const keywordLower = keyword.toLowerCase();
+
+      if (trackGenresLower.includes(keywordLower)) {
         matchingPlaylists.push(playlistKey);
         break; // Break after the first match is found in this playlist
       }
